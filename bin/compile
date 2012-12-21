@@ -18,6 +18,7 @@ ver=${OTP_VERSION:=${DEFAULT_OTP_VERSION}}
 tarball=${ver}.tgz
 OTP_TARBALL_URL="https://s3.amazonaws.com/heroku-buildpack-erlang/${tarball}"
 ERLROOT=${build}/otp
+PROFILE=${HOME}/.profile.d
 
 echo "-----> Using Erlang/OTP $ver"
 
@@ -69,5 +70,7 @@ if [ ${PIPESTATUS[0]} -ne 0 ]; then
     echo "-----> Release failed"
     exit 1
 fi
+
+cp ${bpdir}/opt/otp.sh ${PROFILE}
 
 echo "-----> Build succeeded"
