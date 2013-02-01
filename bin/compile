@@ -59,7 +59,6 @@ if [ ${PIPESTATUS[0]} -ne 0 ]; then
   exit 1
 fi
 
-mkdir ${PROFILE}
 cp ${bpdir}/opt/otp.sh ${PROFILE}
 
 echo "-----> Build succeeded"
