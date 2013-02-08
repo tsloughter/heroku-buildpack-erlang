@@ -56,19 +56,24 @@ if [ ! -e "relcool" ]; then
     cp ${bpdir}/opt/relcool ./
 fi
 
-echo "-----> Building with Rebar"
-unset GIT_DIR
-./rebar get-deps compile 2>&1 | sed -u 's/^/       /'
-if [ ${PIPESTATUS[0]} -ne 0 ]; then
-  echo "-----> Build failed"
-  exit 1
-fi
+if [ -e "Makefile" ]; then
+    echo "-----> Building with Makefile"
+    make rel 2>&1 | sed -u 's/^/       /'
+else
+    echo "-----> Building with Rebar"
+    unset GIT_DIR
+    ./rebar get-deps compile 2>&1 | sed -u 's/^/       /'
+    if [ ${PIPESTATUS[0]} -ne 0 ]; then
+        echo "-----> Build failed"
+        exit 1
+    fi
 
-echo "-----> Creating release with relcool"
-./relcool 2>&1 | sed -u 's/^/       /'
-if [ ${PIPESTATUS[0]} -ne 0 ]; then
-    echo "-----> Release failed"
-    exit 1
+    echo "-----> Creating release with relcool"
+    ./relcool 2>&1 | sed -u 's/^/       /'
+    if [ ${PIPESTATUS[0]} -ne 0 ]; then
+        echo "-----> Release failed"
+        exit 1
+    fi
 fi
 
 if [ -f ${bpdir}/opt/otp.sh ]; then
