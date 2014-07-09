@@ -1,0 +1,19 @@
+#!/bin/bash
+
+run_build() {
+    rebar get-deps
+    rebar compile
+    relx $RELX_OPTIONS $RELX_CMD
+}
+
+set -e
+
+RELX_OPTIONS="-i true --dev-mode false"
+RELX_CMD="release tar"
+
+run_build
+VERSION=$(ls -t --group-directories-first _rel/${REL_NAME}/releases | head -n1)
+echo "VERSION: " $VERSION
+#upload _rel/$REL_NAME/$REL_NAME-$VERSION.tar.gz $REL_NAME/$VERSION/$REL_NAME-$VERSION.tar.gz
+
+exit 0
