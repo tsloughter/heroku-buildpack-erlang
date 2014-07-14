@@ -26,7 +26,8 @@ ERTS_VSN=${ERTS_VSN}" > ./release_version
 git config --global user.email $GITEMAIL
 git config --global user.name $GITNAME
 
-git clone $GITREPO .
+git clone $GITREPO $REL_NAME
+cd $REL_NAME
 
 git fetch origin --tags --prune
 
