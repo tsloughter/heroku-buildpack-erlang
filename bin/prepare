@@ -23,6 +23,11 @@ ERTS_VSN=${ERTS_VSN}" > ./release_version
     git commit -a -m "Version Bump: ${VERSION}"
 }
 
+set -e
+
+sh /app/bin/otp.sh
+. /app/bin/otp.sh
+
 git config --global user.email $GITEMAIL
 git config --global user.name $GITNAME
 
