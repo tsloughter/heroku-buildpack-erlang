@@ -28,8 +28,8 @@ set -e
 sh /app/bin/otp.sh
 . /app/bin/otp.sh
 
-git config --global user.email $GITEMAIL
-git config --global user.name $GITNAME
+#git config --global user.email $GITEMAIL
+#git config --global user.name $GITNAME
 
 git clone $GITREPO $REL_NAME
 cd $REL_NAME
