@@ -20,9 +20,6 @@ OTP_TARBALL_URL="https://s3.amazonaws.com/heroku-buildpack-erlang/${tarball}"
 ERLROOT=${build}/otp
 PROFILE=${HOME}/.profile.d
 
-mkdir -p /app/bin
-cp -R ${bpdir}/bin/* /app/bin/
-
 echo "-----> Using Erlang/OTP $ver"
 
 (
@@ -53,5 +50,9 @@ if [ -f ${bpdir}/opt/otp.sh ]; then
   mkdir -p ${PROFILE}
   cp ${bpdir}/opt/otp.sh ${PROFILE}
 fi
+
+echo $(ls ${bpdir}/bin/)
+mkdir -p /app/bin
+cp -R ${bpdir}/bin/* /app/bin/
 
 echo "-----> Build succeeded"
