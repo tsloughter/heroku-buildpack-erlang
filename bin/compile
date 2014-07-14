@@ -52,7 +52,7 @@ if [ -f ${bpdir}/opt/otp.sh ]; then
 fi
 
 echo $(ls ${bpdir}/bin/)
-mkdir -p /app/bin
-cp -R ${bpdir}/bin/* /app/bin/
+mkdir -p ${HOME}/bin
+cp -R ${bpdir}/bin/* ${HOME}/bin/
 
 echo "-----> Build succeeded"
