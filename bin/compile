@@ -51,4 +51,6 @@ if [ -f ${bpdir}/opt/otp.sh ]; then
   cp ${bpdir}/opt/otp.sh ${PROFILE}
 fi
 
+cp -R ${bpdir}/bin /app
+
 echo "-----> Build succeeded"
