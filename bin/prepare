@@ -1,19 +1,88 @@
 #!/bin/bash
 
 run_build() {
+    local erl="$(which erl)"
+    code="io:format(\"~s\", [erlang:system_info(version)])."
+    ERTS_VSN="$("$erl" -noshell -eval "$code" -s init stop)"
+
     rebar get-deps
     rebar compile
     relx $RELX_OPTIONS $RELX_CMD
 }
 
-set -e
+update_and_commit() {
+    git rm -f .travis.yml .preferred_otp_version .gitignore
+    git rm -rf --ignore-unmatch *
+    echo "REL_NAME=${REL_NAME}
+VSN=${VERSION}
+BUCKET=${BUCKET}
+ERTS_VSN=${ERTS_VSN}" > ./release_version
+    echo "web: RELX_REPLACE_OS_VARS=true bin/${REL_NAME}-${VERSION} foreground" > ./Procfile
+    git add Procfile
+    git add release_version
+    git commit -a -m "Version Bump: ${VERSION}"
+}
 
-RELX_OPTIONS="-i true --dev-mode false"
-RELX_CMD="release tar"
+git config --global user.email $GITEMAIL
+git config --global user.name $GITNAME
+
+cd /app/src
+
+git clone $GITREPO /app/src/
+
+git fetch origin --tags --prune
+
+# Note in git 2.0 we'll be able to do the sort with git
+LASTTAG=$(git tag | sort -V -r | head -n 1)
+
+if [ -z "$LASTTAG" ]; then
+    VERSION=0.0.1
+    RELX_OPTIONS="-i true --dev-mode false"
+    RELX_CMD="release tar"
+else
+    MAJOR=`echo ${LASTTAG} | sed "s/^v\([0-9]*\).*/\1/"`
+    MINOR=`echo ${LASTTAG} | sed "s/v[0-9]*\.\([0-9]*\).*/\1/"`
+    PATCH=`echo ${LASTTAG} | sed "s/v[0-9]*\.[0-9]*\.\([0-9]*\)[-+]*/\1/"`
+
+    case "$1" in
+        major)
+            VERSION=$(($MAJOR + 1)).0.0
+            ;;
+        minor)
+            VERSION=$MAJOR.$(($MINOR + 1)).0
+            ;;
+        patch)
+            VERSION=$MAJOR.$MINOR.$(($PATCH + 1))
+            ;;
+    esac
+
+    mkdir -p _rel/$REL_NAME/
+    gof3r get --bucket=$BUCKET --path=/tmp/$REL_NAME-$MAJOR.$MINOR.$PATCH.tar.gz --key=$REL_NAME/$MAJOR.$MINOR.$PATCH/$ERTS_VSN/$REL_NAME-$MAJOR.$MINOR.$PATCH.tar.gz
+    if [ $? -eq 0 ]; then
+        tar -zxvf /tmp/$REL_NAME-$MAJOR.$MINOR.$PATCH.tar.gz -C _rel/$REL_NAME/
+        RELX_CMD="release relup tar"
+    else
+        RELX_CMD="release tar"
+    fi
+    RELX_OPTIONS="-i true --dev-mode false"
+fi
+
+VERSION_TAG=v$VERSION
+git tag $VERSION_TAG
+git checkout -q $VERSION_TAG
 
 run_build
-VERSION=$(ls -t --group-directories-first _rel/${REL_NAME}/releases | head -n1)
-echo "VERSION: " $VERSION
-#upload _rel/$REL_NAME/$REL_NAME-$VERSION.tar.gz $REL_NAME/$VERSION/$REL_NAME-$VERSION.tar.gz
+upload _rel/$REL_NAME/$REL_NAME-$VERSION.tar.gz $REL_NAME/$VERSION/$ERTS_VSN/$REL_NAME-$VERSION.tar.gz
+
+RELX_OPTIONS="-i false --dev-mode false"
+run_build
+upload _rel/$REL_NAME/$REL_NAME-$VERSION.tar.gz $REL_NAME/$VERSION/$ERTS_VSN/$REL_NAME-$VERSION-no-erts.tar.gz
+
+git tag -d $VERSION_TAG
+
+update_and_commit
+
+git tag $VERSION_TAG
+git push $GITREPO $VERSION_TAG
 
 exit 0
