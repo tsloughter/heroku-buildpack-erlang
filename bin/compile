@@ -20,7 +20,6 @@ OTP_TARBALL_URL="https://s3.amazonaws.com/heroku-buildpack-erlang/${tarball}"
 ERLROOT=${build}/otp
 PROFILE=${HOME}/.profile.d
 
-ls "-----> Copying buildpack bin"
 cp -R ${bpdir}/bin/ /app/
 
 echo "-----> Using Erlang/OTP $ver"
