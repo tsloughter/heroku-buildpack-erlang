@@ -53,5 +53,6 @@ fi
 
 mkdir -p ./bin
 cp -R ${bpdir}/bin/* ./bin/
+cp -R ${bpdir}/opt/* ./bin/
 
 echo "-----> Build succeeded"
