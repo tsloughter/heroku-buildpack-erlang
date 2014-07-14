@@ -51,8 +51,7 @@ if [ -f ${bpdir}/opt/otp.sh ]; then
   cp ${bpdir}/opt/otp.sh ${PROFILE}
 fi
 
-echo $(ls ${bpdir}/bin/)
-mkdir -p ${HOME}/bin
-cp -R ${bpdir}/bin/* ${HOME}/bin/
+mkdir -p ./bin
+cp -R ${bpdir}/bin/* ./bin/
 
 echo "-----> Build succeeded"
