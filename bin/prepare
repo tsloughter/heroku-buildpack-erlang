@@ -65,6 +65,10 @@ else
             ;;
     esac
 
+    erl="$(which erl)"
+    code="io:format(\"~s\", [erlang:system_info(version)])."
+    ERTS_VSN="$("$erl" -noshell -eval "$code" -s init stop)"
+
     mkdir -p _rel/$REL_NAME/
     gof3r get --bucket=$BUCKET --path=/tmp/$REL_NAME-$MAJOR.$MINOR.$PATCH.tar.gz --key=$REL_NAME/$MAJOR.$MINOR.$PATCH/$ERTS_VSN/$REL_NAME-$MAJOR.$MINOR.$PATCH.tar.gz
     if [ $? -eq 0 ]; then
