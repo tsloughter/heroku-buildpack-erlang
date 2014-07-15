@@ -20,6 +20,10 @@ OTP_TARBALL_URL="https://s3.amazonaws.com/heroku-buildpack-erlang/${tarball}"
 ERLROOT=${build}/otp
 PROFILE=${HOME}/.profile.d
 
+echo "-----> Installing Hub"
+gem install hub
+hub hub standalone > ${HOME}/bin/hub && chmod +x ${HOME}/bin/hub
+
 echo "-----> Using Erlang/OTP $ver"
 
 (
