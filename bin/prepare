@@ -61,6 +61,9 @@ else
         patch)
             VERSION=$MAJOR.$MINOR.$(($PATCH + 1))
             ;;
+        *)
+            exit 1
+            ;;
     esac
 
     erl="$(which erl)"
