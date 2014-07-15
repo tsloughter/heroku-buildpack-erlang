@@ -25,6 +25,7 @@ ERTS_VSN=${ERTS_VSN}" > ./release_version
 
 set -e
 
+mkdir ~/.ssh
 echo "$SSH_KEY" > ~/.ssh/id_rsa
 ssh-keyscan git.herokai.com >> ~/.ssh/known_hosts
 
