@@ -25,7 +25,8 @@ ERTS_VSN=${ERTS_VSN}" > ./release_version
 
 set -e
 
-echo $SSH_KEY > ~/.ssh/id_rsa
+echo "$SSH_KEY" > ~/.ssh/id_rsa
+ssh-keyscan git.herokai.com >> ~/.ssh/known_hosts
 
 sh /app/bin/otp.sh
 . /app/bin/otp.sh
