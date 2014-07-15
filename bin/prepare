@@ -23,8 +23,6 @@ ERTS_VSN=${ERTS_VSN}" > ./release_version
     git commit -a -m "Version Bump: ${VERSION}"
 }
 
-set -e
-
 mkdir -p ~/.ssh
 echo "Host *\n    StrictHostKeyChecking no" > ~/.ssh/config
 echo "$SSH_KEY" > ~/.ssh/id_rsa
@@ -79,6 +77,8 @@ else
     fi
     RELX_OPTIONS="-i true --dev-mode false"
 fi
+
+set -e
 
 VERSION_TAG=v$VERSION
 git tag $VERSION_TAG
