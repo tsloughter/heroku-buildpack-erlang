@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -euo pipefail
 
 if [ $# != 2 ]; then
     echo "Usage: prepare <OLD GIT TAG> <NEW GIT TAG>"
@@ -36,7 +36,7 @@ ERTS_VSN="$("$erl" -noshell -eval "$code" -s init stop)"
 mkdir -p _rel/$REL_NAME/
 gof3r get --bucket=$BUCKET --path=/tmp/$REL_NAME-$OLD_VSN.tar.gz --key=$REL_NAME/$OLD_VSN/$ERTS_VSN/$REL_NAME-$OLD_VSN.tar.gz
 if [ $? -eq 0 ]; then
-    tar -zxvf /tmp/$REL_NAME-$MAJOR.$MINOR.$PATCH.tar.gz -C _rel/$REL_NAME/
+    tar -zxvf /tmp/$REL_NAME-$OLD_VSN.tar.gz -C _rel/$REL_NAME/
     RELX_CMD="release relup tar"
 else
     RELX_CMD="release tar"
