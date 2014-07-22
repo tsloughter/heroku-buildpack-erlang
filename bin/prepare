@@ -8,7 +8,7 @@ if [ $# != 2 ]; then
 fi
 
 OLD_VSN=$1
-VERSION_TAG=$2
+VERSION_TAG=v$2
 
 run_build() {
     rebar get-deps
